@@ -13,65 +13,137 @@ const fs = require("fs");
 const key = "0123456789abcdef";
 let plaintext = "";
 
+let startAes = Date.now();
+AesFunc();
+let timeTaken = Date.now() - startAes;
+console.log("Total time taken for Aes : " + timeTaken + " milliseconds");
+
+let startDes = Date.now();
+DesFunc();
+let timeTakenDes = Date.now() - startDes;
+console.log("Total time taken for Des : " + timeTakenDes + " milliseconds");
+
 plaintext = fs.readFileSync("chaava.jpeg", "hex").toString();
 
-// Define DES class
-class DES {
-  constructor(key) {
-    // Initialize DES with key
-    this.key = CryptoJS.enc.Hex.parse(key);
+function AesFunc() {
+  // Define AES class
+  class AES {
+    constructor(key) {
+      // Initialize DES with key
+      this.key = CryptoJS.enc.Hex.parse(key);
+    }
+
+    encrypt(plaintext) {
+      // Perform DES encryption on plaintext
+      const encrypted = CryptoJS.AES.encrypt(plaintext, this.key, {
+        mode: CryptoJS.mode.ECB,
+      });
+
+      // Return ciphertext as hex string
+      return encrypted.ciphertext.toString();
+    }
+
+    // decrypt(ciphertext) {
+    //   // Parse ciphertext from hex string
+    //   const ciphertextHex = CryptoJS.enc.Hex.parse(ciphertext);
+
+    //   // Perform DES decryption on ciphertext
+    //   const decrypted = CryptoJS.AES.decrypt(
+    //     { ciphertext: ciphertextHex },
+    //     this.key,
+    //     { mode: CryptoJS.mode.ECB }
+    //   );
+
+    //   // Return decrypted plaintext as UTF-8 string
+    //   return decrypted.toString(CryptoJS.enc.Utf8);
+    // }
   }
 
-  encrypt(plaintext) {
-    // Perform DES encryption on plaintext
-    const encrypted = CryptoJS.DES.encrypt(plaintext, this.key, {
-      mode: CryptoJS.mode.ECB,
-    });
+  // Perform DES encryption
+  const aes = new AES(key);
+  const ciphertext = aes.encrypt(plaintext);
+  console.log(ciphertext);
+  // Perform DES decryption
+  // const decrypted = aes.decrypt(ciphertext);
 
-    // Return ciphertext as hex string
-    return encrypted.ciphertext.toString();
-  }
+  // // Print results
+  // // console.log("Plaintext: ", plaintext);
+  // // console.log("Ciphertext: ", ciphertext);
+  // console.log("Decrypted: ", decrypted);
 
-  decrypt(ciphertext) {
-    // Parse ciphertext from hex string
-    const ciphertextHex = CryptoJS.enc.Hex.parse(ciphertext);
+  // console.log(decrypted);
+  // // printPT(plaintext, "plaintext")
+  // // printPT(decrypted, "decrypted")
 
-    // Perform DES decryption on ciphertext
-    const decrypted = CryptoJS.DES.decrypt(
-      { ciphertext: ciphertextHex },
-      this.key,
-      { mode: CryptoJS.mode.ECB }
-    );
+  // let b = Buffer.from(decrypted);
 
-    // Return decrypted plaintext as UTF-8 string
-    return decrypted.toString(CryptoJS.enc.Utf8);
-  }
+  // const decryptedFile = b.toString("base64");
+
+  // fs.writeFile("chaava420.jpeg", decryptedFile, function (err) {
+  //   if (err) throw err;
+  //   console.log("Saved!");
+  // });
 }
 
-// Perform DES encryption
-const des = new DES(key);
-const ciphertext = des.encrypt(plaintext);
+function DesFunc() {
+  // Define DES class
+  class DES {
+    constructor(key) {
+      // Initialize DES with key
+      this.key = CryptoJS.enc.Hex.parse(key);
+    }
 
-// Perform DES decryption
-const decrypted = des.decrypt(ciphertext);
+    encrypt(plaintext) {
+      // Perform DES encryption on plaintext
+      const encrypted = CryptoJS.DES.encrypt(plaintext, this.key, {
+        mode: CryptoJS.mode.ECB,
+      });
 
-// Print results
-// console.log("Plaintext: ", plaintext);
-// console.log("Ciphertext: ", ciphertext);
-// console.log("Decrypted: ", decrypted);
+      // Return ciphertext as hex string
+      return encrypted.ciphertext.toString();
+    }
 
-console.log(decrypted);
-// printPT(plaintext, "plaintext")
-// printPT(decrypted, "decrypted")
+    // decrypt(ciphertext) {
+    //   // Parse ciphertext from hex string
+    //   const ciphertextHex = CryptoJS.enc.Hex.parse(ciphertext);
 
-let b = Buffer.from(decrypted);
+    //   // Perform DES decryption on ciphertext
+    //   const decrypted = CryptoJS.DES.decrypt(
+    //     { ciphertext: ciphertextHex },
+    //     this.key,
+    //     { mode: CryptoJS.mode.ECB }
+    //   );
 
-const decryptedFile = b.toString("base64");
+    //   // Return decrypted plaintext as UTF-8 string
+    //   return decrypted.toString(CryptoJS.enc.Utf8);
+    // }
+  }
 
-fs.writeFile("chaava420.jpeg", decryptedFile, function (err) {
-  if (err) throw err;
-  console.log("Saved!");
-});
+  // Perform DES encryption
+  const des = new DES(key);
+  const ciphertextDes = des.encrypt(plaintext);
+  console.log(ciphertextDes);
+  // Perform DES decryption
+  // const decryptedDes = des.decrypt(ciphertextDes);
+
+  // Print results
+  // console.log("Plaintext: ", plaintext);
+  // console.log("Ciphertext: ", ciphertext);
+  // console.log("Decrypted: ", decryptedDes);
+
+  // console.log(decryptedDes);
+  // printPT(plaintext, "plaintext")
+  // printPT(decrypted, "decrypted")
+
+  // let bDes = Buffer.from(decryptedDes);
+
+  // const decryptedFileDes = bDes.toString("base64");
+
+  // fs.writeFile("chaava420.jpeg", decryptedFileDes, function (err) {
+  //   if (err) throw err;
+  //   console.log("Saved!");
+  // });
+}
 
 // Create a JWT
 function createJwt(payload, secretKey) {
@@ -112,9 +184,9 @@ function base64UrlEncode(str) {
   return base64;
 }
 
-app.listen(5000, () => {
-  console.log("Listening on port 5000");
-});
+// app.get("/image", (req, res) => {
+//   res.send("Hello");
+// });
 
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
@@ -129,4 +201,8 @@ app.post("/login", (req, res) => {
 
   const decoded = verifyJwt(token, secretKey);
   console.log(decoded);
+});
+
+app.listen(5000, () => {
+  console.log("Listening on port 5000");
 });
